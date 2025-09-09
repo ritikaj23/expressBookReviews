@@ -70,7 +70,7 @@ public_users.get('/review/:isbn',function (req, res) {
 
 
 // TASK 10 - Get the book list available in the shop using Promises
-public_users.get('/books',function (req, res) {
+public_users.get('/',function (req, res) {
 
     const get_books = new Promise((resolve, reject) => {
         resolve(res.send(JSON.stringify({books}, null, 4)));
@@ -80,8 +80,25 @@ public_users.get('/books',function (req, res) {
 
   });
 
+// Task 10: Get the book list available in the shop using async/await + Axios
+public_users.get('/', async function (req, res) {
+    try {
+      const response = await axios.get('http://localhost:5000/');
+      res.status(200).json(response.data);
+    } catch (error) {
+      res.status(500).json({ message: "Error fetching book list", error: error.message });
+    }
+  });
+
+// Task 10 (with Promises): Get the book list using Promises + Axios
+public_users.get('/', function (req, res) {
+    axios.get('http://localhost:5000/')
+      .then(response => res.status(200).json(response.data))
+      .catch(error => res.status(500).json({ message: "Error fetching book list", error: error.message }));
+  });
+
 // TASK 11 - Get book details based on ISBN using Promises
-public_users.get('/books/isbn/:isbn',function (req, res) {
+public_users.get('/isbn/:isbn',function (req, res) {
     const get_books_isbn = new Promise((resolve, reject) => {
     const isbn = req.params.isbn;
     // console.log(isbn);
@@ -102,9 +119,28 @@ public_users.get('/books/isbn/:isbn',function (req, res) {
 
 });
 
+// Task 11: Get book details based on ISBN using async/await + Axios
+public_users.get('isbn/:isbn', async function (req, res) {
+    const isbn = req.params.isbn;
+    try {
+      const response = await axios.get(`http://localhost:5000/isbn/${isbn}`);
+      res.status(200).json(response.data);
+    } catch (error) {
+      res.status(404).json({ message: "Book not found", error: error.message });
+    }
+  });
+
+// Task 11 (with Promises): Get book details based on ISBN using Promises + Axios
+public_users.get('/isbn/:isbn', function (req, res) {
+    const isbn = req.params.isbn;
+    axios.get(`http://localhost:5000/isbn/${isbn}`)
+      .then(response => res.status(200).json(response.data))
+      .catch(error => res.status(404).json({ message: "Book not found", error: error.message }));
+  });
+
 
 // TASK 12 - Get book details based on author
-public_users.get('/books/author/:author',function (req, res) {
+public_users.get('/author/:author',function (req, res) {
 
     const get_books_author = new Promise((resolve, reject) => {
 
@@ -131,7 +167,24 @@ public_users.get('/books/author/:author',function (req, res) {
   });
 
   });
+// Task 12: Get book details based on author using async/await + Axios
+public_users.get('/author/:author', async function (req, res) {
+    try {
+      const author = req.params.author;
+      const response = await axios.get(`http://localhost:5000/author/${encodeURIComponent(author)}`);
+      res.status(200).json(response.data);
+    } catch (error) {
+      res.status(404).json({ message: "Author not found", error: error.message });
+    }
+  });
 
+// Task 12 (with Promises): Get book details based on author using Promises + Axios
+public_users.get('/author/:author', function (req, res) {
+    const author = req.params.author;
+    axios.get(`http://localhost:5000/author/${encodeURIComponent(author)}`)
+      .then(response => res.status(200).json(response.data))
+      .catch(error => res.status(404).json({ message: "Author not found", error: error.message }));
+  });
 
 // TASK 13 - // Get all books based on title
 public_users.get('/books/title/:title',function (req, res) {
@@ -161,5 +214,21 @@ public_users.get('/books/title/:title',function (req, res) {
 
   });
 
-
+// Task 13: Get book details based on title using async/await + Axios
+public_users.get('/title/:title', async function (req, res) {
+    try {
+      const title = req.params.title;
+      const response = await axios.get(`http://localhost:5000/title/${encodeURIComponent(title)}`);
+      res.status(200).json(response.data);
+    } catch (error) {
+      res.status(404).json({ message: "Title not found", error: error.message });
+    }
+  });
+// Task 13 (with Promises): Get book details based on title using Promises + Axios
+public_users.get('/title/:title', function (req, res) {
+    const title = req.params.title;
+    axios.get(`http://localhost:5000/title/${encodeURIComponent(title)}`)
+      .then(response => res.status(200).json(response.data))
+      .catch(error => res.status(404).json({ message: "Title not found", error: error.message }));
+  });
 module.exports.general = public_users;
