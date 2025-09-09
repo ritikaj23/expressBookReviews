@@ -97,6 +97,19 @@ public_users.get('/', function (req, res) {
       .catch(error => res.status(500).json({ message: "Error fetching book list", error: error.message }));
   });
 
+  // Task 10: Get the book list using Promises + Axios
+public_users.get('/', function (req, res) {
+    const promise = new Promise((resolve, reject) => {
+      axios.get('http://localhost:5000/')
+        .then(response => resolve(response.data))
+        .catch(error => reject(error));
+    });
+  
+    promise
+      .then(data => res.status(200).json(data))
+      .catch(error => res.status(500).json({ message: "Error fetching book list", error: error.message }));
+  });
+
 // TASK 11 - Get book details based on ISBN using Promises
 public_users.get('/isbn/:isbn',function (req, res) {
     const get_books_isbn = new Promise((resolve, reject) => {
@@ -120,7 +133,7 @@ public_users.get('/isbn/:isbn',function (req, res) {
 });
 
 // Task 11: Get book details based on ISBN using async/await + Axios
-public_users.get('isbn/:isbn', async function (req, res) {
+public_users.get('/isbn/:isbn', async function (req, res) {
     const isbn = req.params.isbn;
     try {
       const response = await axios.get(`http://localhost:5000/isbn/${isbn}`);
@@ -130,12 +143,37 @@ public_users.get('isbn/:isbn', async function (req, res) {
     }
   });
 
+  public_users.get('/isbn-async/:isbn', async function (req, res) {
+    const isbn = req.params.isbn;
+    try {
+      const response = await axios.get(`http://localhost:5000/isbn/${isbn}`);
+      return res.status(200).json(response.data);
+    } catch (error) {
+      return res.status(404).json({ message: "Book not found", error: error.message });
+    }
+  });
+
 // Task 11 (with Promises): Get book details based on ISBN using Promises + Axios
 public_users.get('/isbn/:isbn', function (req, res) {
     const isbn = req.params.isbn;
     axios.get(`http://localhost:5000/isbn/${isbn}`)
       .then(response => res.status(200).json(response.data))
       .catch(error => res.status(404).json({ message: "Book not found", error: error.message }));
+  });
+
+// Get book details based on ISBN using Promise and Axios
+public_users.get('/isbn/:isbn', function (req, res) {
+    const isbn = req.params.isbn;
+  
+    const promise = new Promise((resolve, reject) => {
+      axios.get(`http://localhost:5000/isbn/${isbn}`)
+        .then(response => resolve(response.data))
+        .catch(error => reject(error));
+    });
+  
+    promise
+      .then(data => res.status(200).json(data))
+      .catch(error => res.status(404).json({ message: `Book with ISBN ${isbn} not found.`, error: error.message }));
   });
 
 
@@ -178,11 +216,18 @@ public_users.get('/author/:author', async function (req, res) {
     }
   });
 
-// Task 12 (with Promises): Get book details based on author using Promises + Axios
+// Task 12: Get book details based on author using Promises + Axios
 public_users.get('/author/:author', function (req, res) {
     const author = req.params.author;
-    axios.get(`http://localhost:5000/author/${encodeURIComponent(author)}`)
-      .then(response => res.status(200).json(response.data))
+  
+    const promise = new Promise((resolve, reject) => {
+      axios.get(`http://localhost:5000/author/${encodeURIComponent(author)}`)
+        .then(response => resolve(response.data))
+        .catch(error => reject(error));
+    });
+  
+    promise
+      .then(data => res.status(200).json(data))
       .catch(error => res.status(404).json({ message: "Author not found", error: error.message }));
   });
 
@@ -224,11 +269,18 @@ public_users.get('/title/:title', async function (req, res) {
       res.status(404).json({ message: "Title not found", error: error.message });
     }
   });
-// Task 13 (with Promises): Get book details based on title using Promises + Axios
+// Task 13: Get book details based on title using Promises + Axios
 public_users.get('/title/:title', function (req, res) {
     const title = req.params.title;
-    axios.get(`http://localhost:5000/title/${encodeURIComponent(title)}`)
-      .then(response => res.status(200).json(response.data))
+  
+    const promise = new Promise((resolve, reject) => {
+      axios.get(`http://localhost:5000/title/${encodeURIComponent(title)}`)
+        .then(response => resolve(response.data))
+        .catch(error => reject(error));
+    });
+  
+    promise
+      .then(data => res.status(200).json(data))
       .catch(error => res.status(404).json({ message: "Title not found", error: error.message }));
   });
 module.exports.general = public_users;
